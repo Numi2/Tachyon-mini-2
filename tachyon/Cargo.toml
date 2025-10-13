@@ -8,6 +8,7 @@ members = [
     "crates/agg",
     "crates/keys",
     "crates/node",
+    "crates/ragu-lite",
 ]
 resolver = "2"
 
@@ -34,7 +35,7 @@ rocksdb = "0.22"
 halo2_proofs = "0.3"
 halo2_gadgets = "0.3"
 pasta_curves = "0.5"
-reddsa = "0.6"
+reddsa = "0.5"
 zcash_address = "0.4"
 zcash_primitives = "0.14"
 zcash_client_backend = "0.13"

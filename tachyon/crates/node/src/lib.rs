@@ -30,11 +30,11 @@ pub struct BlockMMRLeaf {
     pub commitment_delta_digest: CommitmentDeltaDigest,
 }
 
-const DS_ORCH_ROOT_V1: &[u8; 16] = b"orch.root.v1\0\0\0"; // 16 bytes
-const DS_NF_BLOCK_V1: &[u8; 16] = b"nf.block.v1\0\0\0\0";
-const DS_CM_DELTA_V1: &[u8; 16] = b"cm.delta.v1\0\0\0";
-const DS_MMR_LEAF_V1: &[u8; 16] = b"mmr.leaf.v1\0\0\0";
-const DS_TG_UNIFIED_BLOCK_V1: &[u8; 16] = b"tg.unified.blk.v1";
+const DS_ORCH_ROOT_V1: &[u8; 16] = b"orch.root.v1\0\0\0\0"; // 12 + 4 = 16
+const DS_NF_BLOCK_V1: &[u8; 16] = b"nf.block.v1\0\0\0\0\0"; // 11 + 5 = 16
+const DS_CM_DELTA_V1: &[u8; 16] = b"cm.delta.v1\0\0\0\0\0"; // 11 + 5 = 16
+const DS_MMR_LEAF_V1: &[u8; 16] = b"mmr.leaf.v1\0\0\0\0\0"; // 11 + 5 = 16
+const DS_TG_UNIFIED_BLOCK_V1: &[u8; 16] = b"tg.unified.blk\0\0"; // 14 + 2 = 16
 
 /// Compute BLAKE2b-256 digest of the current Orchard root (domain-separated).
 pub fn compute_orchard_root_digest(root: &[u8; 32]) -> OrchardRootDigest {

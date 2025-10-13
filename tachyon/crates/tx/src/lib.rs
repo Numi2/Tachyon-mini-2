@@ -74,10 +74,10 @@ pub struct OnChainNullifier(pub [u8; 32]);
 pub struct OffchainSyncTag(pub [u8; 32]);
 
 /// Domain separators for BLAKE2b-256 derivations.
-const DS_FLAVOR_V1: &[u8; 16] = b"tachyon.flavor.v1";
-const DS_NF_V1: &[u8; 16] = b"tachyon.nf.v1\0\0"; // pad to 16
-const DS_SYNC_V1: &[u8; 16] = b"tachyon.sync.v1\0";
-const DS_TG_UNIFIED_TX_V1: &[u8; 16] = b"tg.unified.tx.v1";
+const DS_FLAVOR_V1: &[u8; 16] = b"tachyon.flavor\0\0"; // 14 + 2 = 16
+const DS_NF_V1: &[u8; 16] = b"tachyon.nf.v1\0\0\0"; // 13 + 3 = 16
+const DS_SYNC_V1: &[u8; 16] = b"tachyon.sync.v1\0"; // 15 + 1 = 16
+const DS_TG_UNIFIED_TX_V1: &[u8; 16] = b"tg.unified.tx.v1"; // exactly 16
 
 /// Derive the fixed nullifier flavor at output creation. This value must be
 /// committed inside the note and is immutable for the note's lifetime.
@@ -157,9 +157,58 @@ pub fn derive_unified_tachygram_tx(bundle: &TachyonBundle) -> UnifiedTachygramDi
     UnifiedTachygramDigest(out)
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(transparent)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[repr(transparent)]
 pub struct RedPallasSig(pub [u8; REDPALLAS_SIG_LEN]);
+
+impl serde::Serialize for RedPallasSig {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_bytes(&self.0)
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for RedPallasSig {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct SigVisitor;
+        impl<'de> serde::de::Visitor<'de> for SigVisitor {
+            type Value = RedPallasSig;
+            fn expecting(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                write!(f, "a 64-byte redpallas signature")
+            }
+            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                if v.len() != REDPALLAS_SIG_LEN {
+                    return Err(E::invalid_length(v.len(), &self));
+                }
+                let mut out = [0u8; REDPALLAS_SIG_LEN];
+                out.copy_from_slice(v);
+                Ok(RedPallasSig(out))
+            }
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: serde::de::SeqAccess<'de>,
+            {
+                let mut out = [0u8; REDPALLAS_SIG_LEN];
+                for i in 0..REDPALLAS_SIG_LEN {
+                    out[i] = match seq.next_element::<u8>()? {
+                        Some(b) => b,
+                        None => return Err(serde::de::Error::invalid_length(i, &self)),
+                    };
+                }
+                Ok(RedPallasSig(out))
+            }
+        }
+        deserializer.deserialize_bytes(SigVisitor)
+    }
+}
 
 impl core::fmt::Debug for RedPallasSig {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
