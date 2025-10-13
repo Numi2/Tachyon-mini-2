@@ -1,0 +1,21 @@
+[package]
+name = "pcd"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_bytes = { workspace = true }
+halo2_proofs = { workspace = true }
+halo2_gadgets = { workspace = true }
+pasta_curves = { workspace = true }
+rayon = { workspace = true }
+hex = { workspace = true }
+ff = { workspace = true }
+group = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+rand_core = { workspace = true }

@@ -1,0 +1,14 @@
+[package]
+name = "node"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+tx = { path = "../tx" }
+pcd = { path = "../pcd" }
+accum = { path = "../accum" }
+serde = { workspace = true, features = ["derive"] }
+blake2b_simd = { workspace = true }
+
+

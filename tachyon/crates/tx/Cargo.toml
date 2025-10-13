@@ -1,0 +1,19 @@
+[package]
+name = "tx"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+serde_bytes = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+hex = { workspace = true }
+blake2b_simd = { workspace = true }
+zcash_primitives = { workspace = true }
+zcash_address = { workspace = true }
+reddsa = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+rand_core = { workspace = true }
