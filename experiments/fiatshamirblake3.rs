@@ -1,4 +1,4 @@
-//playing around with fiat shamir over blake3 , should beposeidon -  Numan
+//playing around with fiat shamir over blake3 , poseidon2 is the natural choice -  Numan
 //! Fiat–Shamir transcript over BLAKE3.
 
 use blake3::Hasher;

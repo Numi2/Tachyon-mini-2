@@ -1,0 +1,11 @@
+	Recursive proof definition: each block or wallet state proof verifies the previous proof inside the circuit, so validation cost stays constant while proof depth grows.
+	•	PCD model: each proof carries both data (state root, accumulators, metadata) and its own validity proof. This lets the next step verify it without downloading history.
+	•	Chain structure: stateᵢ = f(stateᵢ₋₁, tx_batchᵢ); proofᵢ shows (a) proofᵢ₋₁ was valid and (b) f() obeyed the consensus rules.
+	•	Compression: validators keep only the latest (stateᵢ, proofᵢ). Old proofs are absorbed recursively; verification time is O(1).
+	•	Tachyon usage: the blockchain holds just commitments and the recursive proof of the full ledger. Wallets hold personal recursive proofs of their spendability.
+	•	Recursion backend: implemented over the Pasta curve cycle (Pallas ↔ Vesta) because each curve’s scalar field fits within the other’s base field, enabling in-circuit verification of prior proofs.
+	•	State transition proof: enforces that accumulators (commitments / nullifiers) were updated correctly and that transaction rules were followed; public inputs include old root, new root, and block metadata.
+	•	Aggregation: wallet proofs (micro-states) are merged recursively into block proofs (macro-states); Ragu provides the low-level gadgets and accumulation logic.
+	•	Security assumption: recursion inherits soundness of the inner proof system and the Fiat–Shamir heuristic over BLAKE2b / BLAKE3 (depending on implementation); no trusted setup beyond the curve cycle.
+
+Result: both the global ledger and each wallet can be represented by a single, small, recursively updated proof that attests to complete history correctness and state validity while preserving full privacy.
