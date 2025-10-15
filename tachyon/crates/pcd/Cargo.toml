@@ -15,6 +15,8 @@ rayon = { workspace = true }
 hex = { workspace = true }
 ff = { workspace = true }
 group = { workspace = true }
+accum = { path = "../accum" }
+rand_core = { workspace = true }
 
 [dev-dependencies]
 serde_json = { workspace = true }

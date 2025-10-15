@@ -266,6 +266,9 @@ dependencies = [
  "accum",
  "anyhow",
  "blake2b_simd",
+ "ff",
+ "group",
+ "pasta_curves",
  "pcd",
  "primitives",
  "serde",
@@ -784,6 +787,7 @@ dependencies = [
 name = "pcd"
 version = "0.1.0"
 dependencies = [
+ "accum",
  "anyhow",
  "ff",
  "group",
@@ -831,7 +835,10 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "blake2b_simd",
+ "ff",
+ "group",
  "hex",
+ "pasta_curves",
  "rand_core",
  "reddsa",
  "serde",

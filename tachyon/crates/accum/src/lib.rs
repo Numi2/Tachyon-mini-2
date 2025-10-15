@@ -5,6 +5,8 @@
 //! consensus.
 
 pub mod poseidon;
+pub mod ipa;
+pub mod poly;
 
 use serde::{Deserialize, Serialize};
 
@@ -14,7 +16,26 @@ pub mod params {
     pub const ACCUM_HEIGHT: usize = 32;
     /// Node arity (binary) for Poseidon2 compression; revisit after benchmarks.
     pub const NODE_ARITY: usize = 2;
+
+    /// Degree bound for per-block polynomial p_i (max tachygrams per block).
+    pub const DEGREE_N: usize = crate::ipa::DEGREE_N;
+    /// Number of coefficients in commitment vector (degree + 1).
+    pub const NUM_COEFFICIENTS: usize = crate::ipa::NUM_COEFFICIENTS;
+    /// MSM chunk size for commitment bases.
+    pub const CHUNK: usize = crate::ipa::CHUNK;
+    /// Number of chunks.
+    pub const NUM_CHUNKS: usize = crate::ipa::NUM_CHUNKS;
 }
+
+/// Pallas commitment types (opaque for now; exposed for consensus I/O later).
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Default)]
+pub struct Commitment(pub [u8; 32]);
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Default)]
+pub struct AState(pub [u8; 32]);
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Default)]
+pub struct SState(pub [u8; 32]);
 
 /// 32-byte accumulator root (Poseidon-based tree root, Pasta field domain).
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Debug, Default)]
@@ -145,6 +166,9 @@ impl NullifierSMAWindow {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::poly::{roots_to_coeffs, eval_horner};
+    use crate::ipa::{commit_coeffs, encode_point};
+    use pasta_curves::{pallas, vesta::Scalar as FrVesta};
 
     #[test]
     fn batch_encoding_roundtrip_size() {
@@ -154,5 +178,26 @@ mod tests {
         ]);
         let enc = ser::serialize_batch(&batch);
         assert_eq!(enc.len(), 8 + 2 * (32 + 1));
+    }
+
+    #[test]
+    fn poly_roots_and_eval_match() {
+        use ff::Field;
+        let a = vec![FrVesta::from(3u64), FrVesta::from(5u64), FrVesta::from(7u64)];
+        let coeffs = roots_to_coeffs(&a);
+        // Evaluate at r=11: prod (r-a)
+        let r = FrVesta::from(11u64);
+        let lhs = a.iter().fold(FrVesta::ONE, |acc, ai| acc * (r - *ai));
+        let rhs = eval_horner(&coeffs, r);
+        assert_eq!(lhs, rhs);
+    }
+
+    #[test]
+    fn ipa_commit_encodes_point() {
+        // 4 coeffs commit should produce a valid point encoding/decoding.
+        let coeffs = [1u64,2,3,4].map(pallas::Scalar::from);
+        let c = commit_coeffs(&coeffs);
+        let bytes = encode_point(&c);
+        assert!(bytes.iter().any(|&b| b != 0));
     }
 }

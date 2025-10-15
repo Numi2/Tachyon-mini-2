@@ -3,6 +3,42 @@
 use serde::{Deserialize, Serialize};
 
 pub mod aggregate;
+pub mod block_circuit;
+pub mod wallet_step;
+
+/// High-level proving/verification entrypoints (placeholders binding Halo2 APIs).
+pub mod api2 {
+    use super::{block_circuit::{BlockPolyCircuit, BlockPolyWitness, BlockPolyPublic, prove_block_poly}, wallet_step::{WalletNonMemStepCircuit, WalletStepWitness, WalletStepPublic}};
+    use halo2_proofs::dev::MockProver;
+    use ff::Field;
+    use pasta_curves::vesta::Scalar as FrVesta;
+
+    pub struct Params { pub k: u32 }
+
+    pub fn prove_block(_params: &Params, wit: &BlockPolyWitness) -> anyhow::Result<(BlockPolyPublic, Vec<u8>)> {
+        // Compute public summary off-circuit; return stub proof bytes for now.
+        let (public, proof) = super::block_circuit::prove_block_poly(wit)?;
+        Ok((public, proof))
+    }
+
+    pub fn prove_wallet_step(_params: &Params, wit: &WalletStepWitness) -> anyhow::Result<(WalletStepPublic, Vec<u8>)> {
+        super::wallet_step::prove_wallet_step(wit)
+    }
+
+    pub fn verify_block(params: &Params, _public: &BlockPolyPublic, _proof: &[u8]) -> anyhow::Result<bool> {
+        // Use MockProver until real IPA PCS is wired.
+        let circuit = BlockPolyCircuit { roots: vec![], coeffs: vec![], r: FrVesta::ONE };
+        let prover = MockProver::run(params.k, &circuit, vec![])?;
+        Ok(prover.verify().is_ok())
+    }
+
+    pub fn verify_wallet_step(params: &Params, _public: &WalletStepPublic, _proof: &[u8]) -> anyhow::Result<bool> {
+        // Keep wallet-step on MockProver for now.
+        let circuit = WalletNonMemStepCircuit::default();
+        let prover = halo2_proofs::dev::MockProver::run(params.k, &circuit, vec![])?;
+        Ok(prover.verify().is_ok())
+    }
+}
 
 /// Authorizing digest (ZIP-244 authorizing-data hash) bound inside PCD.
 #[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Debug, Default)]

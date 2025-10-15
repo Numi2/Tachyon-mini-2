@@ -1,6 +1,8 @@
 //! Digest derivation functions for nullifiers, sync tags, and tachygrams.
 
 use blake2b_simd::Params as Blake2bParams;
+use pasta_curves::vesta::Scalar as FrVesta;
+use ff::FromUniformBytes;
 
 use crate::types::*;
 use crate::encode::{encode_u32, encode_u64};
@@ -10,6 +12,7 @@ const DS_FLAVOR_V1: &[u8; 16] = b"tachyon.flavor\0\0"; // 14 + 2 = 16
 const DS_NF_V1: &[u8; 16] = b"tachyon.nf.v1\0\0\0"; // 13 + 3 = 16
 const DS_SYNC_V1: &[u8; 16] = b"tachyon.sync.v1\0"; // 15 + 1 = 16
 const DS_TG_UNIFIED_TX_V1: &[u8; 16] = b"tg.unified.tx.v1"; // exactly 16
+const DS_TACHYGRAM_TO_FR_V1: &[u8; 16] = b"tg.to_fr.v1\0\0\0\0\0"; // exactly 16 bytes
 
 /// Derive the fixed nullifier flavor at output creation. This value must be
 /// committed inside the note and is immutable for the note's lifetime.
@@ -78,5 +81,14 @@ pub fn derive_unified_tachygram_tx(bundle: &TachyonBundle) -> UnifiedTachygramDi
     let mut out = [0u8; 32];
     out.copy_from_slice(hash.as_bytes());
     UnifiedTachygramDigest(out)
+}
+
+/// Canonical hash-to-field for 32-byte tachygrams → Fr(Vesta).
+/// Uses BLAKE2b-512 with domain separation and wide reduction.
+pub fn tachygram_to_fr(tag: &[u8; 32]) -> FrVesta {
+    let hash = Blake2bParams::new().hash_length(64).personal(DS_TACHYGRAM_TO_FR_V1).hash(tag);
+    let mut wide = [0u8; 64];
+    wide.copy_from_slice(hash.as_bytes());
+    <FrVesta as FromUniformBytes<64>>::from_uniform_bytes(&wide)
 }
 
