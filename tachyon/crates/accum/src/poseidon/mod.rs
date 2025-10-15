@@ -1,5 +1,5 @@
 //! Poseidon hash placeholders and tree helpers.
-//!
+//! numan
 //! This module will wrap halo2_gadgets Poseidon for circuits and provide
 //! off-circuit hashing using Pasta fields. For now, we only expose stubs so
 //! crates can compile and link.

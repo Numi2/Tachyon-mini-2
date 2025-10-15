@@ -1,7 +1,7 @@
 //! PCD wallet prototype following Tachyon/Ragu objectives.
 //!
 //! - Unified 32-byte objects (tachy-objects) for commitments and nullifiers.
-//! - Split accumulation with linear-domain separation.
+
 //! - Recursive "state proof" carried by the wallet.
 //! - Non-uniform synthesis path via metadata parity branch.
 

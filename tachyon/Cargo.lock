@@ -44,15 +44,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "agg"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "pcd",
- "tx",
-]
-
-[[package]]
 name = "anyhow"
 version = "1.0.100"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -266,6 +257,18 @@ dependencies = [
  "crypto-common",
  "inout",
  "zeroize",
+]
+
+[[package]]
+name = "consensus"
+version = "0.1.0"
+dependencies = [
+ "accum",
+ "anyhow",
+ "blake2b_simd",
+ "pcd",
+ "primitives",
+ "serde",
 ]
 
 [[package]]
@@ -589,10 +592,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "keys"
-version = "0.1.0"
-
-[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -648,18 +647,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d97bbf43eb4f088f8ca469930cde17fa036207c9a5e02ccc5107c4e8b17c964"
 dependencies = [
  "nonempty",
-]
-
-[[package]]
-name = "node"
-version = "0.1.0"
-dependencies = [
- "accum",
- "anyhow",
- "blake2b_simd",
- "pcd",
- "serde",
- "tx",
 ]
 
 [[package]]
@@ -836,6 +823,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85eae3c4ed2f50dcfe72643da4befc30deadb458a9b590d720cde2f2b1e97da9"
 dependencies = [
  "zerocopy",
+]
+
+[[package]]
+name = "primitives"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "blake2b_simd",
+ "hex",
+ "rand_core",
+ "reddsa",
+ "serde",
+ "serde_bytes",
+ "serde_json",
+ "thiserror",
+ "zcash_address 0.4.0",
+ "zcash_primitives",
 ]
 
 [[package]]
@@ -1107,14 +1111,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sync"
-version = "0.1.0"
-
-[[package]]
-name = "syncd"
-version = "0.1.0"
-
-[[package]]
 name = "tap"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1184,23 +1180,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9d12581f227e93f094d3af2ae690a574abb8a2b9b7a96e7cfe9647b2b617678"
 dependencies = [
  "once_cell",
-]
-
-[[package]]
-name = "tx"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "blake2b_simd",
- "hex",
- "rand_core",
- "reddsa",
- "serde",
- "serde_bytes",
- "serde_json",
- "thiserror",
- "zcash_address 0.4.0",
- "zcash_primitives",
 ]
 
 [[package]]

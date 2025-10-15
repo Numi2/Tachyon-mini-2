@@ -2,6 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
+pub mod aggregate;
+
 /// Authorizing digest (ZIP-244 authorizing-data hash) bound inside PCD.
 #[derive(Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Debug, Default)]
 pub struct AuthorizingDigest(pub [u8; 32]);

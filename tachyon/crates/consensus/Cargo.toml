@@ -1,11 +1,11 @@
 [package]
-name = "node"
+name = "consensus"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
-tx = { path = "../tx" }
+primitives = { path = "../primitives" }
 pcd = { path = "../pcd" }
 accum = { path = "../accum" }
 serde = { workspace = true, features = ["derive"] }

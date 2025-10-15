@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
-tx = { path = "../tx" }
+primitives = { path = "../primitives" }
 pcd = { path = "../pcd" }
 
 

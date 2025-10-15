@@ -1,8 +1,18 @@
 //! Aggregator for Tachyon: builds AggregateProofs from txids.
 
 use anyhow::Result;
-use pcd::VerifyingKey;
-use primitives::{AggregateProof, TXID_LEN};
+use crate::VerifyingKey;
+
+pub const TXID_LEN: usize = 32;
+
+/// Aggregate proof structure containing txids and proof bytes.
+#[derive(Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize, Debug)]
+pub struct AggregateProof {
+    // Exact txid list covered by this aggregate; order is preserved.
+    pub txids: Vec<[u8; TXID_LEN]>,
+    // Recursive proof bytes (Halo2 recursion). Exact format pinned later.
+    pub proof: Vec<u8>,
+}
 
 #[derive(Default)]
 pub struct Aggregator {
@@ -26,5 +36,4 @@ pub fn aggregate_txids(vk: &VerifyingKey, txids: Vec<[u8; TXID_LEN]>) -> Result<
     for id in txids { agg.add_txid(id); }
     agg.build(vk)
 }
-
 

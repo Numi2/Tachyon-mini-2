@@ -2,12 +2,8 @@
 members = [
     "crates/accum",
     "crates/pcd",
-    "crates/tx",
-    "crates/sync",
-    "crates/syncd",
-    "crates/agg",
-    "crates/keys",
-    "crates/node",
+    "crates/primitives",
+    "crates/consensus",
     "crates/ragu-lite",
 ]
 resolver = "2"
