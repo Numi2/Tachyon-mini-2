@@ -18,4 +18,8 @@ thiserror = "1.0"
 rand = "0.8"
 hex = "0.4"
 
+[features]
+# Enable the blog-style API (MaybeKind/Driver/Circuit split) alongside the existing API.
+blog_api = []
+
 

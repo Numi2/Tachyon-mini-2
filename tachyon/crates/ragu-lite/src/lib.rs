@@ -10,6 +10,17 @@ pub mod pcd;
 pub mod transcript;
 pub mod wallet;
 
+#[cfg(feature = "blog_api")]
+pub mod maybe_kind;
+#[cfg(feature = "blog_api")]
+pub mod driver_blog;
+#[cfg(feature = "blog_api")]
+pub mod circuit_blog;
+#[cfg(feature = "blog_api")]
+pub mod pcd_blog;
+#[cfg(feature = "blog_api")]
+pub mod wallet_blog;
+
 pub use accum::{Accumulator, SplitAccumulator};
 pub use cs::{Constraint, ConstraintSystem, LinComb, Var};
 pub use driver::{Circuit, CpuDriver, Driver, Instance, SynthesisError};
@@ -20,5 +31,14 @@ pub use wallet::{
     Batch, Note, TachyObj, Wallet, WalletCircuit, WalletParams,
 };
 pub use transcript::FsTranscript;
+
+#[cfg(feature = "blog_api")]
+pub use driver_blog as blog_driver;
+#[cfg(feature = "blog_api")]
+pub use circuit_blog as blog_circuit;
+#[cfg(feature = "blog_api")]
+pub use pcd_blog as blog_pcd;
+#[cfg(feature = "blog_api")]
+pub use wallet_blog as blog_wallet;
 
 
